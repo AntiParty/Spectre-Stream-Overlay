@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Stats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <!-- Google Font -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif; /* Changed font */
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .stats {
+            display: flex;
+            background: rgba(0, 0, 0, 0.575);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            width: 400px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .stats:hover {
+            transform: scale(1.05);
+        }
+
+        .rank-icon {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+            animation: fadeIn 1s; /* Fade-in effect for the icon */
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 24px; /* Font size for stats */
+            color: #FFFFFF;
+        }
+
+        .solo-rank {
+            font-size: 24px; /* Same size as Last Match */
+            font-weight: bold; /* Bold for emphasis */
+            animation: slideIn 0.5s; /* Slide-in effect for solo rank */
+        }
+
+        .result-message {
+            font-size: 28px; /* Increased font size for Last Match */
+            font-weight: bold;
+            margin-top: 10px;
+            animation: slideIn 0.5s; /* Slide-in effect for match result */
+        }
+
+        .arrow {
+            width: 30px; /* Increased arrow size */
+            height: 30px; /* Increased arrow size */
+            vertical-align: middle;
+            animation: bounce 0.5s; /* Bounce effect for arrows */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .rank-icon {
+                width: 80px;
+                height: 80px;
+                margin-right: 15px;
+            }
+
+            .stat {
+                font-size: 20px;
+            }
+
+            .solo-rank {
+                font-size: 20px; /* Smaller font size on mobile */
+            }
+
+            .result-message {
+                font-size: 22px; /* Smaller font size on mobile */
+            }
+
+            .arrow {
+                width: 25px; /* Adjust arrow size for mobile */
+                height: 25px; /* Adjust arrow size for mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="stats">
+            <img class="rank-icon" id="rankIcon" src="./assets/Unranked.png" alt="Rank Icon">
+            <div class="stat">
+                <span class="solo-rank" id="soloRank">Solo Rank: Loading...</span> <!-- Updated class for consistent styling -->
+                <div class="result-message" id="matchResult">
+                    Last Match: Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const soloRankMapping = {
+            0: { name: "Unranked", image: "Unranked.png" },
+            1: { name: "Bronze 1", image: "Bronze 1.png" },
+            2: { name: "Bronze 2", image: "Bronze 2.png" },
+            3: { name: "Bronze 3", image: "Bronze 3.png" },
+            4: { name: "Bronze 4", image: "Bronze 4.png" },
+            5: { name: "Silver 1", image: "Silver 1.png" },
+            6: { name: "Silver 2", image: "Silver 2.png" },
+            7: { name: "Silver 3", image: "Silver 3.png" },
+            8: { name: "Silver 4", image: "Silver 4.png" },
+            9: { name: "Gold 1", image: "Gold 1.png" },
+            10: { name: "Gold 2", image: "Gold 2.png" },
+            11: { name: "Gold 3", image: "Gold 3.png" },
+            12: { name: "Gold 4", image: "Gold 4.png" },
+            13: { name: "Platinum 1", image: "Platinum 1.png" },
+            14: { name: "Platinum 2", image: "Platinum 2.png" },
+            15: { name: "Platinum 3", image: "Platinum 3.png" },
+            16: { name: "Platinum 4", image: "Platinum 4.png" },
+            17: { name: "Emerald 1", image: "Emerald 1.png" },
+            18: { name: "Emerald 2", image: "Emerald 2.png" },
+            19: { name: "Emerald 3", image: "Emerald 3.png" },
+            20: { name: "Emerald 4", image: "Emerald 4.png" },
+            21: { name: "Ruby 1", image: "Ruby 1.png" },
+            22: { name: "Ruby 2", image: "Ruby 2.png" },
+            23: { name: "Ruby 3", image: "Ruby 3.png" },
+            24: { name: "Ruby 4", image: "Ruby 4.png" },
+            25: { name: "Diamond 1", image: "Diamond 1.png" },
+            26: { name: "Diamond 2", image: "Diamond 2.png" },
+            27: { name: "Diamond 3", image: "Diamond 3.png" },
+            28: { name: "Diamond 4", image: "Diamond 4.png" },
+            29: { name: "Champion", image: "Champion.png" }
+        };
+
+        async function fetchData() {
+            const playerId = 'a7a6b16b-e80b-4606-a71a-165de1db9ae4'; // Replace with your Player ID
+            const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`; // API URL
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                console.log('API Response:', data); // Log the response for debugging
+
+                // Update Solo Rank
+                const soloRankId = data.stats?.current_solo_rank || 0;
+                const soloRankInfo = soloRankMapping[soloRankId] || { name: 'Unknown', image: 'Unknown.png' };
+                document.getElementById('rankIcon').src = `./assets/${soloRankInfo.image}`;
+                document.getElementById('soloRank').textContent = `Solo Rank: ${soloRankInfo.name}`;
+
+                // Update Match Result
+                if (data.matches?.length > 0) {
+                    const latestMatch = data.matches[0];
+                    const playerMatchStats = latestMatch.player_team.players.find(player => player.id === playerId);
+
+                    if (playerMatchStats) {
+                        const rankDelta = playerMatchStats.ranked_rating_delta;
+
+                        if (rankDelta > 0) {
+                            document.getElementById('matchResult').innerHTML = `Last Match: <span style="color: green;">+${rankDelta} <img class="arrow" src="./assets/up_plusplus.webp" alt="Win Arrow"></span>`;
+                        } else {
+                            document.getElementById('matchResult').innerHTML = `Last Match: <span style="color: red;">${rankDelta} <img class="arrow" src="./assets/down_plusplus.webp" alt="Loss Arrow"></span>`;
+                        }
+                    } else {
+                        document.getElementById('matchResult').textContent = 'Last Match: Player stats not found';
+                    }
+                } else {
+                    document.getElementById('matchResult').textContent = 'Last Match: No matches found';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('soloRank').textContent = 'Solo Rank: Error - ' + error.message;
+                document.getElementById('matchResult').textContent = 'Last Match: Error - ' + error.message;
+            }
+        }
+
+        // Call the function immediately to fetch data on load
+        fetchData();
+        // Fetch data every 60 seconds
+        setInterval(fetchData, 60000);
+    </script>
+</body>
+
+</html>
