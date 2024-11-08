@@ -1,246 +1,411 @@
-<!DOCTYPE html>
-<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Player Stats</title>
+<style>
+  @font-face {
+    font-family: "Product Sans";
+    src: url("./product-sans/Product Sans Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+  }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Stats</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <!-- Google Font -->
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif; /* Changed font */
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: #FFFFFF;
-            text-align: center;
-        }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    background: transparent;
+    color: #ffffff;
+  }
 
-        .container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+  }
 
-        .stats {
-            display: flex;
-            background: rgba(0, 0, 0, 0.575);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-            width: 400px;
-            transition: transform 0.3s, opacity 0.3s;
-        }
+  .stats {
+    display: flex;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 15px;
+    padding: 20px;
+    width: 400px;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s ease forwards;
+    gap: 20px; /* Adds consistent spacing between elements */
+  }
 
-        .stats:hover {
-            transform: scale(1.05);
-        }
+  .rank-icon {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+    opacity: 0;
+    animation: fadeInIcon 0.8s ease forwards;
+    transition: transform 0.4s ease;
+  }
 
-        .rank-icon {
-            width: 100px;
-            height: 100px;
-            margin-right: 20px;
-            animation: fadeIn 1s; /* Fade-in effect for the icon */
-        }
+  .rank-icon.rank-up {
+    animation: rankUpAnimation 0.4s ease;
+  }
 
-        .stat {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            font-size: 24px; /* Font size for stats */
-            color: #FFFFFF;
-        }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: left;
+    flex: 1;
+  }
 
-        .solo-rank {
-            font-size: 24px; /* Same size as Last Match */
-            font-weight: bold; /* Bold for emphasis */
-            animation: slideIn 0.5s; /* Slide-in effect for solo rank */
-        }
+  .solo-rank-wrapper {
+    display: flex;
+    align-items: center; /* Ensures rank label and rank text are aligned */
+  }
 
-        .result-message {
-            font-size: 28px; /* Increased font size for Last Match */
-            font-weight: bold;
-            margin-top: 10px;
-            animation: slideIn 0.5s; /* Slide-in effect for match result */
-        }
+  .solo-rank {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideIn 0.6s ease forwards 0.2s;
+    transition: color 0.4s ease;
+    display: inline-block; /* Prevents it from taking up full width */
+    margin-right: 5px;
+  }
 
-        .arrow {
-            width: 30px; /* Increased arrow size */
-            height: 30px; /* Increased arrow size */
-            vertical-align: middle;
-            animation: bounce 0.5s; /* Bounce effect for arrows */
-        }
+  #soloRank {
+    margin-top: -4px;
+    margin-left: 0px;
+  }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
+  .rank-text {
+    color: inherit; /* Inherits color from parent */
+  }
 
-            to {
-                opacity: 1;
-            }
-        }
+  .solo-rank.rank-up {
+    animation: flashRankColorUp 0.4s ease;
+  }
 
-        @keyframes slideIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
+  .solo-rank.rank-down {
+    animation: flashRankColorDown 0.4s ease;
+  }
 
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+  .last-match {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #a0a0a0;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideIn 0.6s ease forwards 0.4s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-        @keyframes bounce {
-            0%,
-            20%,
-            50%,
-            80%,
-            100% {
-                transform: translateY(0);
-            }
+  .last-match img {
+    width: 20px;
+    height: 20px;
+  }
 
-            40% {
-                transform: translateY(-10px);
-            }
+  .glow-win {
+    color: #22c55e;
+    text-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e, 0 0 30px #22c55e;
+    transition: text-shadow 0.3s ease-in-out;
+  }
 
-            60% {
-                transform: translateY(-5px);
-            }
-        }
+  .glow-loss {
+    color: red;
+    text-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red;
+    transition: text-shadow 0.3s ease-in-out;
+  }
 
-        @media (max-width: 500px) {
-            .stats {
-                width: 90%;
-                padding: 15px;
-            }
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-            .rank-icon {
-                width: 80px;
-                height: 80px;
-                margin-right: 15px;
-            }
+  @keyframes fadeInIcon {
+    to {
+      opacity: 1;
+    }
+  }
 
-            .stat {
-                font-size: 20px;
-            }
+  @keyframes fadeInBar {
+    to {
+      opacity: 1;
+    }
+  }
 
-            .solo-rank {
-                font-size: 20px; /* Smaller font size on mobile */
-            }
+  @keyframes slideIn {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 
-            .result-message {
-                font-size: 22px; /* Smaller font size on mobile */
-            }
+  @keyframes rankUpAnimation {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 
-            .arrow {
-                width: 25px; /* Adjust arrow size for mobile */
-                height: 25px; /* Adjust arrow size for mobile */
-            }
-        }
-    </style>
+  @keyframes flashRankColorUp {
+    0% {
+      color: #ffffff;
+    }
+    50% {
+      color: #22c55e;
+    }
+    100% {
+      color: #ffffff;
+    }
+  }
+
+  @keyframes flashRankColorDown {
+    0% {
+      color: #ffffff;
+    }
+    50% {
+      color: red;
+    }
+    100% {
+      color: #ffffff;
+    }
+  }
+
+  @keyframes pulseBar {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @media (max-width: 500px) {
+    .stats {
+      width: 90%;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .rank-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    .solo-rank {
+      font-size: 18px;
+    }
+
+    .last-match {
+      font-size: 14px;
+    }
+  }
+</style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="stats">
-            <img class="rank-icon" id="rankIcon" src="./assets/Unranked.png" alt="Rank Icon">
-            <div class="stat">
-                <span class="solo-rank" id="soloRank">Solo Rank: Loading...</span> <!-- Updated class for consistent styling -->
-                <div class="result-message" id="matchResult">
-                    Last Match: Loading...
-                </div>
-            </div>
-        </div>
+<div class="container">
+  <div class="stats">
+    <img class="rank-icon" id="rankIcon" src="./assets/Unranked.png" />
+    <div class="stat">
+      <div class="solo-rank-wrapper">
+        <span class="solo-rank" id="soloRankLabel">Solo Rank: </span>
+        <span id="soloRank" class="rank-text">Loading...</span>
+      </div>
+      <div class="last-match" id="matchResult">Last Match: Loading...</div>
     </div>
+  </div>
+</div>
 
-    <script>
-        const soloRankMapping = {
-            0: { name: "Unranked", image: "Unranked.png" },
-            1: { name: "Bronze 1", image: "Bronze 1.png" },
-            2: { name: "Bronze 2", image: "Bronze 2.png" },
-            3: { name: "Bronze 3", image: "Bronze 3.png" },
-            4: { name: "Bronze 4", image: "Bronze 4.png" },
-            5: { name: "Silver 1", image: "Silver 1.png" },
-            6: { name: "Silver 2", image: "Silver 2.png" },
-            7: { name: "Silver 3", image: "Silver 3.png" },
-            8: { name: "Silver 4", image: "Silver 4.png" },
-            9: { name: "Gold 1", image: "Gold 1.png" },
-            10: { name: "Gold 2", image: "Gold 2.png" },
-            11: { name: "Gold 3", image: "Gold 3.png" },
-            12: { name: "Gold 4", image: "Gold 4.png" },
-            13: { name: "Platinum 1", image: "Platinum 1.png" },
-            14: { name: "Platinum 2", image: "Platinum 2.png" },
-            15: { name: "Platinum 3", image: "Platinum 3.png" },
-            16: { name: "Platinum 4", image: "Platinum 4.png" },
-            17: { name: "Emerald 1", image: "Emerald 1.png" },
-            18: { name: "Emerald 2", image: "Emerald 2.png" },
-            19: { name: "Emerald 3", image: "Emerald 3.png" },
-            20: { name: "Emerald 4", image: "Emerald 4.png" },
-            21: { name: "Ruby 1", image: "Ruby 1.png" },
-            22: { name: "Ruby 2", image: "Ruby 2.png" },
-            23: { name: "Ruby 3", image: "Ruby 3.png" },
-            24: { name: "Ruby 4", image: "Ruby 4.png" },
-            25: { name: "Diamond 1", image: "Diamond 1.png" },
-            26: { name: "Diamond 2", image: "Diamond 2.png" },
-            27: { name: "Diamond 3", image: "Diamond 3.png" },
-            28: { name: "Diamond 4", image: "Diamond 4.png" },
-            29: { name: "Champion", image: "Champion.png" }
-        };
+<div class="rank-up-overlay" id="rankUpOverlay">
+  <div class="rank-up-text">Rank Up!</div>
+</div>
 
-        async function fetchData() {
-            const playerId = 'a7a6b16b-e80b-4606-a71a-165de1db9ae4'; // Replace with your Player ID
-            const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`; // API URL
+<script>
+  const soloRankMapping = {
+    0: { name: "Unranked", image: "Unranked.png", color: "#ffffff" },
+    1: { name: "Bronze 1", image: "Bronze 1.png", color: "#8d4f29" },
+    2: { name: "Bronze 2", image: "Bronze 2.png", color: "#8d4f29" },
+    3: { name: "Bronze 3", image: "Bronze 3.png", color: "#8d4f29" },
+    4: { name: "Bronze 4", image: "Bronze 4.png", color: "#8d4f29" },
+    5: { name: "Silver 1", image: "Silver 1.png", color: "#bebebe" },
+    6: { name: "Silver 2", image: "Silver 2.png", color: "#bebebe" },
+    7: { name: "Silver 3", image: "Silver 3.png", color: "#bebebe" },
+    8: { name: "Silver 4", image: "Silver 4.png", color: "#bebebe" },
+    9: { name: "Gold 1", image: "Gold 1.png", color: "#e39925" },
+    10: { name: "Gold 2", image: "Gold 2.png", color: "#e39925" },
+    11: { name: "Gold 3", image: "Gold 3.png", color: "#e39925" },
+    12: { name: "Gold 4", image: "Gold 4.png", color: "#e39925" },
+    13: { name: "Platinum 1", image: "Platinum 1.png", color: "#8ec1e5" },
+    14: { name: "Platinum 2", image: "Platinum 2.png", color: "#8ec1e5" },
+    15: { name: "Platinum 3", image: "Platinum 3.png", color: "#8ec1e5" },
+    16: { name: "Platinum 4", image: "Platinum 4.png", color: "#8ec1e5" },
+    17: { name: "Emerald 1", image: "Emerald 1.png", color: "#0e9776" },
+    18: { name: "Emerald 2", image: "Emerald 2.png", color: "#0e9776" },
+    19: { name: "Emerald 3", image: "Emerald 3.png", color: "#0e9776" },
+    20: { name: "Emerald 4", image: "Emerald 4.png", color: "#0e9776" },
+    21: { name: "Ruby 1", image: "Ruby 1.png", color: "#e0113a" },
+    22: { name: "Ruby 2", image: "Ruby 2.png", color: "#e0113a" },
+    23: { name: "Ruby 3", image: "Ruby 3.png", color: "#e0113a" },
+    24: { name: "Ruby 4", image: "Ruby 4.png", color: "#e0113a" },
+    25: { name: "Diamond 1", image: "Diamond 1.png", color: "#8531eb" },
+    26: { name: "Diamond 2", image: "Diamond 2.png", color: "#8531eb" },
+    27: { name: "Diamond 3", image: "Diamond 3.png", color: "#8531eb" },
+    28: { name: "Diamond 4", image: "Diamond 4.png", color: "#8531eb" },
+    29: { name: "Champion", image: "Champion.png", color: "#FFEE58" },
+  };
 
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  const rankColors = {
+    Bronze_1: "#8d4f29",
+    Bronze_2: "#8d4f29",
+    Bronze_3: "#8d4f29",
+    Bronze_4: "#8d4f29",
+    Silver_1: "#bebebe",
+    Silver_2: "#bebebe",
+    Silver_3: "#bebebe",
+    Silver_4: "#bebebe",
+    Gold_1: "#e39925",
+    Gold_2: "#e39925",
+    Gold_3: "#e39925",
+    Gold_4: "#e39925",
+    Platinum_1: "#8ec1e5",
+    Platinum_2: "#8ec1e5",
+    Platinum_3: "#8ec1e5",
+    Platinum_4: "#8ec1e5",
+    Emerald_1: "#0e9776",
+    Emerald_2: "#0e9776",
+    Emerald_3: "#0e9776",
+    Emerald_4: "#0e9776",
+    Ruby_1: "#e0113a",
+    Ruby_2: "#e0113a",
+    Ruby_3: "#e0113a",
+    Ruby_4: "#e0113a",
+    Diamond_1: "#8531eb",
+    Diamond_2: "#8531eb",
+    Diamond_3: "#8531eb",
+    Diamond_4: "#8531eb",
+    Champion: "#FFEE58",
+  };
 
-                const data = await response.json();
-                console.log('API Response:', data); // Log the response for debugging
+  let previousRank = null;
 
-                // Update Solo Rank
-                const soloRankId = data.stats?.current_solo_rank || 0;
-                const soloRankInfo = soloRankMapping[soloRankId] || { name: 'Unknown', image: 'Unknown.png' };
-                document.getElementById('rankIcon').src = `./assets/${soloRankInfo.image}`;
-                document.getElementById('soloRank').textContent = `Solo Rank: ${soloRankInfo.name}`;
+  async function fetchData() {
+    const playerId = "a7a6b16b-e80b-4606-a71a-165de1db9ae4"; // Replace with your Player ID
+    const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`; // API URL
 
-                // Update Match Result
-                if (data.matches?.length > 0) {
-                    const latestMatch = data.matches[0];
-                    const playerMatchStats = latestMatch.player_team.players.find(player => player.id === playerId);
+    try {
+      const response = await fetch(url);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
 
-                    if (playerMatchStats) {
-                        const rankDelta = playerMatchStats.ranked_rating_delta;
+      const data = await response.json();
+      console.log("API Response:", data); // Log the response for debugging
 
-                        if (rankDelta > 0) {
-                            document.getElementById('matchResult').innerHTML = `Last Match: <span style="color: green;">+${rankDelta} <img class="arrow" src="./assets/up_plusplus.webp" alt="Win Arrow"></span>`;
-                        } else {
-                            document.getElementById('matchResult').innerHTML = `Last Match: <span style="color: red;">${rankDelta} <img class="arrow" src="./assets/down_plusplus.webp" alt="Loss Arrow"></span>`;
-                        }
-                    } else {
-                        document.getElementById('matchResult').textContent = 'Last Match: Player stats not found';
-                    }
-                } else {
-                    document.getElementById('matchResult').textContent = 'Last Match: No matches found';
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('soloRank').textContent = 'Solo Rank: Error - ' + error.message;
-                document.getElementById('matchResult').textContent = 'Last Match: Error - ' + error.message;
-            }
+      // Solo Rank Data
+      const soloRankId = data.stats?.current_solo_rank || 0;
+      const soloRankInfo = soloRankMapping[soloRankId] || {
+        name: "Unknown",
+        image: "Unknown.png",
+      };
+
+      // Update rank icon and text
+      document.getElementById(
+        "rankIcon"
+      ).src = `./assets/${soloRankInfo.image}`;
+      document.getElementById("soloRankLabel").textContent = "Solo Rank: ";
+      document.getElementById("soloRank").textContent = soloRankInfo.name;
+
+      // Rank Color
+      const rankColor =
+        rankColors[soloRankInfo.name.replace(/\s+/g, "_")] || "#ffffff";
+      document.getElementById("soloRank").style.color = rankColor;
+
+      // Update Match Result
+      const latestMatch = data.matches?.[0];
+      if (latestMatch) {
+        const playerMatchStats = latestMatch.player_team.players.find(
+          (player) => player.id === playerId
+        );
+        if (playerMatchStats) {
+          const rankDelta = playerMatchStats.ranked_rating_delta;
+          const matchResultText =
+            rankDelta > 0
+            ? `Last Match: <span style="color: green;">+${rankDelta} <img class="arrow" src="./assets/up_plusplus.webp" alt="Win Arrow"></span>`
+            : `Last Match: <span style="color: red;">${rankDelta} <img class="arrow" src="./assets/down_plusplus.webp" alt="Loss Arrow"></span>`;
+          document.getElementById("matchResult").innerHTML =
+            matchResultText;
         }
+      }
 
-        // Call the function immediately to fetch data on load
-        fetchData();
-        // Fetch data every 60 seconds
-        setInterval(fetchData, 60000);
-    </script>
+      // Update Progress Bar (assuming soloRankPoints is available from the fetched data)
+      const soloRankPoints = data.stats?.solo_rank_points || 0;
+      const currentRank = { points: 1000 }; // Example data, should be dynamic
+      const nextRank = { points: 1200 }; // Example data, should be dynamic
+      const rankIconName = soloRankInfo.name.replace(/\s+/g, "_");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      document.getElementById("soloRank").textContent =
+        "Solo Rank: Error - " + error.message;
+      document.getElementById("matchResult").textContent =
+        "Last Match: Error - " + error.message;
+    }
+  }
+
+  function triggerRankUpOverlay() {
+    const rankUpOverlay = document.getElementById("rankUpOverlay");
+    rankUpOverlay.classList.add("active");
+    setTimeout(() => {
+      rankUpOverlay.classList.remove("active");
+    }, 2000);
+  }
+
+  // Example call to the function
+
+  function updateRankGradient(rankName) {
+    const rankElement = document.querySelector(".solo-rank span");
+    const rankColor = rankColors[rankName];
+    const lightRankColor = "#ffffff"; // Secondary color for gradient
+
+    if (rankElement) {
+      rankElement.style.background = `linear-gradient(
+        to right,
+        ${lightRankColor} 0%,
+        ${rankColor} 50%,
+        ${lightRankColor} 100%
+    )`;
+      rankElement.style.backgroundSize = "1100% 100%";
+      rankElement.style.backgroundClip = "text";
+      rankElement.style.webkitBackgroundClip = "text"; // For WebKit browsers
+      rankElement.style.webkitTextFillColor = "transparent"; // Ensures text remains transparent
+
+      // Apply an animation that makes the gradient move smoothly
+      rankElement.style.animation = "moveGradient 3s linear infinite"; // Duration extended for smoother effect
+      rankElement.style.backgroundPosition = "0% 0%"; // Start position of animation
+    }
+  }
+
+  fetchData();
+
+  setInterval(fetchData, 60000); // Refresh data every 60 seconds
+</script>
 </body>
-
 </html>

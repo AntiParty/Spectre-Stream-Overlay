@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Player Stats</title>
+    <style>
+        @font-face {
+            font-family: "Product Sans";
+            src: url("./product-sans/Product Sans Bold.ttf") format("truetype");
+            font-weight: bold;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: "Roboto", sans-serif;
+            color: #ffffff;
+            background-color: transparent;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .stats {
+            display: flex;
+            background: rgba(0, 0, 0, 0.75);
+            border-radius: 15px;
+            padding: 20px;
+            width: 400px;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            position: relative; /* Position relative to hold video */
+            overflow: hidden; /* Hide overflow */
+        }
+
+        .rank-icon {
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+            opacity: 0;
+            animation: fadeInIcon 0.8s ease forwards;
+        }
+
+        .stat {
+            font-size: 18px;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .progress-container {
+            background: #444;
+            border-radius: 50px;
+            width: 100%;
+            height: 10px;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: #22c55e;
+            height: 100%;
+            width: 0;
+            border-radius: 50px;
+            transition: width 0.8s ease;
+        }
+
+        .test-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            font-size: 14px;
+            background-color: #22c55e;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s;
+        }
+
+        .test-button:hover {
+            background-color: #16a34a;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInIcon {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Rank-up overlay */
+        .rank-up-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffcc00;
+            font-size: 3em;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 5; /* Set below video */
+        }
+
+        .rank-up-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Video overlay with animation */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.973); /* Semi-transparent black */
+            z-index: 3; /* Ensure it's above the video but below the content */
+            opacity: 0; /* Start hidden */
+            animation: fadeInOverlay 0.5s forwards; /* Animate the overlay */
+            display: none; /* Hidden by default */
+        }
+
+        /* Fade-in animation for the video overlay */
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Video styling */
+        #rankUpVideo {
+            position: absolute; /* Position absolute to fit inside .stats */
+            top: 50%;
+            left: 50%;
+            width: 130%; /* Full width of .stats */
+            height: 130%; /* Full height of .stats */
+            object-fit: cover; /* Maintain aspect ratio */
+            display: none; /* Hidden by default */
+            z-index: 4; /* Ensure video is below overlay */
+            transform: translate(-50%, -50%); /* Center the video */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="stats">
+            <video id="rankUpVideo" src="./assets/rankup.webm" muted></video> <!-- Removed loop -->
+            <div class="video-overlay" id="videoOverlay"></div> <!-- Added overlay -->
+            <img class="rank-icon" id="rankIcon" src="./assets/Unranked.png" />
+            <div class="stat">
+                <span class="solo-rank" id="soloRank">Solo Rank: Loading...</span>
+                <div class="progress-container">
+                    <div class="progress-bar" id="rankProgress"></div>
+                    <div class="strike" id="strike"></div>
+                </div>
+                <div class="last-match" id="matchResult">Last Match: Loading...</div>
+            </div>
+        </div>
+    </div>
+    <!-- Test Rank-Up Button -->
+    <button class="test-button" onclick="triggerRankUp()">Test Rank-Up</button>
+
+    <script>
+        const rankThresholds = [
+        { name: "Bronze_1", points: 0 },
+        { name: "Bronze_2", points: 200 },
+        { name: "Bronze_3", points: 300 },
+        { name: "Bronze_4", points: 500 },
+        { name: "Silver_1", points: 700 },
+        { name: "Silver_2", points: 900 },
+        { name: "Silver_3", points: 1100 },
+        { name: "Silver_4", points: 1300 },
+        { name: "Gold_1", points: 1500 },
+        { name: "Gold_2", points: 1700 },
+        { name: "Gold_3", points: 1900 },
+        { name: "Gold_4", points: 2100 },
+        { name: "Platinum_1", points: 2300 },
+        { name: "Platinum_2", points: 2500 },
+        { name: "Platinum_3", points: 2700 },
+        { name: "Platinum_4", points: 2900 },
+        { name: "Emerald_1", points: 3100 },
+        { name: "Emerald_2", points: 3300 },
+        { name: "Emerald_3", points: 3500 },
+        { name: "Emerald_4", points: 3700 },
+        { name: "Ruby_1", points: 3900 },
+        { name: "Ruby_2", points: 4100 },
+        { name: "Ruby_3", points: 4300 },
+        { name: "Ruby_4", points: 4500 },
+        { name: "Diamond_1", points: 3900 },
+        { name: "Diamond_2", points: 4100 },
+        { name: "Diamond_3", points: 4300 },
+        { name: "Diamond_4", points: 4500 },
+        { name: "Champion", points: 4700 },
+        ];
+
+        const rankColors = {
+            Bronze_1: "#8d4f29",
+            Silver_1: "#bebebe",
+            Gold_1: "#e39925",
+            Platinum_1: "#8ec1e5",
+            Diamond_1: "#8531eb",
+            Champion: "#ffcc00",
+        };
+
+        let previousRank = null;
+
+        async function fetchData() {
+            const playerId = "a7a6b16b-e80b-4606-a71a-165de1db9ae4";
+            const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok)
+                    throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                const soloRankPoints = data.stats?.rank_rating || 0;
+
+                const currentRank = rankThresholds.reduce((prev, curr) => {
+                    return soloRankPoints >= curr.points ? curr : prev;
+                });
+
+                document.getElementById("soloRank").textContent = `Solo Rank: ${currentRank.name.replace("_", " ")}`;
+                document.getElementById("rankIcon").src = `./assets/${currentRank.name}.png`;
+                updateProgressBar(soloRankPoints, currentRank, rankThresholds[rankThresholds.findIndex(rank => rank.name === currentRank.name) + 1] || currentRank);
+
+                if (previousRank !== currentRank.name) {
+                    
+                }
+
+                const rankedRatingDelta = data.last_match?.ranked_rating_delta || 0;
+                document.getElementById("matchResult").textContent = `Last Match: ${rankedRatingDelta > 0 ? `+${rankedRatingDelta}` : rankedRatingDelta}`;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function updateProgressBar(soloRankPoints, currentRank, nextRank) {
+            const progressPercentage =
+                ((soloRankPoints - currentRank.points) /
+                    (nextRank.points - currentRank.points)) *
+                100;
+            const progressBarElement = document.getElementById("rankProgress");
+            progressBarElement.style.width = `${progressPercentage}%`;
+            progressBarElement.style.backgroundColor =
+                rankColors[currentRank.name] || "#8531eb";
+        }
+
+        // Trigger rank-up effect function
+        function triggerRankUp() {
+            const rankUpText = document.getElementById("rankUpText");
+            const rankUpVideo = document.getElementById("rankUpVideo");
+            const videoOverlay = document.getElementById("videoOverlay");
+
+            // Assuming current rank is already fetched
+            const currentRank = document
+                .getElementById("soloRank")
+                .textContent.split(": ")[1];
+
+            // Set the text to the next rank
+            const nextRank =
+                rankThresholds[
+                    rankThresholds.findIndex(
+                        (rank) => rank.name.replace("_", " ") === currentRank
+                    ) + 1
+                ]?.name.replace("_", " ") || currentRank;
+
+            // Activate overlay
+            videoOverlay.style.display = "block"; // Show video overlay
+            videoOverlay.classList.add("active"); // Add animation class
+
+            rankUpVideo.style.display = "block"; // Show video
+            rankUpVideo.currentTime = 0; // Reset video to start
+            rankUpVideo.play(); // Play the video
+
+            // Hide video and overlay after video ends
+            rankUpVideo.onended = () => {
+                rankUpVideo.style.display = "none"; // Hide video
+                videoOverlay.classList.remove("active"); // Remove animation class
+                setTimeout(() => {
+                    videoOverlay.style.display = "none"; // Hide overlay after transition
+                }, 500); // Match duration with transition time
+            };
+        }
+
+        fetchData();
+        setInterval(fetchData, 60000);
+    </script>
+</body>
+</html>
