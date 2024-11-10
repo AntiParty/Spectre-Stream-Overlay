@@ -341,7 +341,19 @@
     async function fetchData() {
       const playerId = "92494c5b-585a-465c-8f3b-b561442b2ad5"; // Replace with your Player ID
       const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`; // API URL
+      const dump_matches = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/dump`;
       
+      try {
+        const response = await fetch(dump_matches);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+  
+        const data = await response.json();
+        console.log("API Response:", data); // Log the response for debugging
+      } catch (error) {
+        
+      }
+
       try {
         const response = await fetch(url);
         if (!response.ok)
