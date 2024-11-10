@@ -96,6 +96,31 @@
     animation: flashRankColorDown 0.4s ease;
   }
 
+  .progress-container {
+  width: 100%;
+  height: 10px;
+  background-color: #333;
+  border-radius: 5px;
+  position: relative;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  border-radius: 5px;
+}
+
+.strike {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background-color: red;
+  visibility: hidden;
+}
+
   .last-match {
     margin-top: 5px;
     font-size: 14px;
@@ -223,189 +248,219 @@
 </head>
 
 <body>
-<div class="container">
-  <div class="stats">
-    <img class="rank-icon" id="rankIcon" src="./assets/Unranked.png" />
-    <div class="stat">
-      <div class="solo-rank-wrapper">
-        <span class="solo-rank" id="soloRankLabel">Solo Rank: </span>
-        <span id="soloRank" class="rank-text">Loading...</span>
+  <div class="container">
+    <div class="stats">
+      <img class="rank-icon" id="rankIcon" src="./assets/Unranked.png" />
+      <div class="stat">
+        <div class="solo-rank-wrapper">
+          <span class="solo-rank" id="soloRankLabel">Solo Rank: </span>
+          <span id="soloRank" class="rank-text">Loading...</span>
+        </div>
+  
+        <!-- Add progress bar container here -->
+        <div class="progress-container">
+          <div class="progress-bar" id="rankProgress"></div>
+          <div class="strike" id="strike"></div>
+        </div>
+  
+        <div class="last-match" id="matchResult">Last Match: Loading...</div>
       </div>
-      <div class="last-match" id="matchResult">Last Match: Loading...</div>
     </div>
   </div>
-</div>
+  
+  <div class="rank-up-overlay" id="rankUpOverlay">
+    <div class="rank-up-text">Rank Up!</div>
+  </div>
 
-<div class="rank-up-overlay" id="rankUpOverlay">
-  <div class="rank-up-text">Rank Up!</div>
-</div>
-
-<script>
-  const soloRankMapping = {
-    0: { name: "Unranked", image: "Unranked.png", color: "#ffffff" },
-    1: { name: "Bronze 1", image: "Bronze 1.png", color: "#8d4f29" },
-    2: { name: "Bronze 2", image: "Bronze 2.png", color: "#8d4f29" },
-    3: { name: "Bronze 3", image: "Bronze 3.png", color: "#8d4f29" },
-    4: { name: "Bronze 4", image: "Bronze 4.png", color: "#8d4f29" },
-    5: { name: "Silver 1", image: "Silver 1.png", color: "#bebebe" },
-    6: { name: "Silver 2", image: "Silver 2.png", color: "#bebebe" },
-    7: { name: "Silver 3", image: "Silver 3.png", color: "#bebebe" },
-    8: { name: "Silver 4", image: "Silver 4.png", color: "#bebebe" },
-    9: { name: "Gold 1", image: "Gold 1.png", color: "#e39925" },
-    10: { name: "Gold 2", image: "Gold 2.png", color: "#e39925" },
-    11: { name: "Gold 3", image: "Gold 3.png", color: "#e39925" },
-    12: { name: "Gold 4", image: "Gold 4.png", color: "#e39925" },
-    13: { name: "Platinum 1", image: "Platinum 1.png", color: "#8ec1e5" },
-    14: { name: "Platinum 2", image: "Platinum 2.png", color: "#8ec1e5" },
-    15: { name: "Platinum 3", image: "Platinum 3.png", color: "#8ec1e5" },
-    16: { name: "Platinum 4", image: "Platinum 4.png", color: "#8ec1e5" },
-    17: { name: "Emerald 1", image: "Emerald 1.png", color: "#0e9776" },
-    18: { name: "Emerald 2", image: "Emerald 2.png", color: "#0e9776" },
-    19: { name: "Emerald 3", image: "Emerald 3.png", color: "#0e9776" },
-    20: { name: "Emerald 4", image: "Emerald 4.png", color: "#0e9776" },
-    21: { name: "Ruby 1", image: "Ruby 1.png", color: "#e0113a" },
-    22: { name: "Ruby 2", image: "Ruby 2.png", color: "#e0113a" },
-    23: { name: "Ruby 3", image: "Ruby 3.png", color: "#e0113a" },
-    24: { name: "Ruby 4", image: "Ruby 4.png", color: "#e0113a" },
-    25: { name: "Diamond 1", image: "Diamond 1.png", color: "#8531eb" },
-    26: { name: "Diamond 2", image: "Diamond 2.png", color: "#8531eb" },
-    27: { name: "Diamond 3", image: "Diamond 3.png", color: "#8531eb" },
-    28: { name: "Diamond 4", image: "Diamond 4.png", color: "#8531eb" },
-    29: { name: "Champion", image: "Champion.png", color: "#FFEE58" },
-  };
-
-  const rankColors = {
-    Bronze_1: "#8d4f29",
-    Bronze_2: "#8d4f29",
-    Bronze_3: "#8d4f29",
-    Bronze_4: "#8d4f29",
-    Silver_1: "#bebebe",
-    Silver_2: "#bebebe",
-    Silver_3: "#bebebe",
-    Silver_4: "#bebebe",
-    Gold_1: "#e39925",
-    Gold_2: "#e39925",
-    Gold_3: "#e39925",
-    Gold_4: "#e39925",
-    Platinum_1: "#8ec1e5",
-    Platinum_2: "#8ec1e5",
-    Platinum_3: "#8ec1e5",
-    Platinum_4: "#8ec1e5",
-    Emerald_1: "#0e9776",
-    Emerald_2: "#0e9776",
-    Emerald_3: "#0e9776",
-    Emerald_4: "#0e9776",
-    Ruby_1: "#e0113a",
-    Ruby_2: "#e0113a",
-    Ruby_3: "#e0113a",
-    Ruby_4: "#e0113a",
-    Diamond_1: "#8531eb",
-    Diamond_2: "#8531eb",
-    Diamond_3: "#8531eb",
-    Diamond_4: "#8531eb",
-    Champion: "#FFEE58",
-  };
-
-  let previousRank = null;
-
-  async function fetchData() {
-    const playerId = "a7a6b16b-e80b-4606-a71a-165de1db9ae4"; // Replace with your Player ID
-    const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`; // API URL
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-
-      const data = await response.json();
-      console.log("API Response:", data); // Log the response for debugging
-
-      // Solo Rank Data
-      const soloRankId = data.stats?.current_solo_rank || 0;
-      const soloRankInfo = soloRankMapping[soloRankId] || {
-        name: "Unknown",
-        image: "Unknown.png",
-      };
-
-      // Update rank icon and text
-      document.getElementById(
-        "rankIcon"
-      ).src = `./assets/${soloRankInfo.image}`;
-      document.getElementById("soloRankLabel").textContent = "Solo Rank: ";
-      document.getElementById("soloRank").textContent = soloRankInfo.name;
-
-      // Rank Color
-      const rankColor =
-        rankColors[soloRankInfo.name.replace(/\s+/g, "_")] || "#ffffff";
-      document.getElementById("soloRank").style.color = rankColor;
-
-      // Update Match Result
-      const latestMatch = data.matches?.[0];
-      if (latestMatch) {
-        const playerMatchStats = latestMatch.player_team.players.find(
-          (player) => player.id === playerId
-        );
-        if (playerMatchStats) {
-          const rankDelta = playerMatchStats.ranked_rating_delta;
-          const matchResultText =
-            rankDelta > 0
-            ? `Last Match: <span style="color: green;">+${rankDelta} <img class="arrow" src="./assets/up_plusplus.webp" alt="Win Arrow"></span>`
-            : `Last Match: <span style="color: red;">${rankDelta} <img class="arrow" src="./assets/down_plusplus.webp" alt="Loss Arrow"></span>`;
-          document.getElementById("matchResult").innerHTML =
-            matchResultText;
+  <script>
+    const soloRankMapping = {
+      0: { name: "Unranked", image: "Unranked.png", color: "#ffffff" },
+      1: { name: "Bronze 1", image: "Bronze 1.png", color: "#8d4f29" },
+      2: { name: "Bronze 2", image: "Bronze 2.png", color: "#8d4f29" },
+      3: { name: "Bronze 3", image: "Bronze 3.png", color: "#8d4f29" },
+      4: { name: "Bronze 4", image: "Bronze 4.png", color: "#8d4f29" },
+      5: { name: "Silver 1", image: "Silver 1.png", color: "#bebebe" },
+      6: { name: "Silver 2", image: "Silver 2.png", color: "#bebebe" },
+      7: { name: "Silver 3", image: "Silver 3.png", color: "#bebebe" },
+      8: { name: "Silver 4", image: "Silver 4.png", color: "#bebebe" },
+      9: { name: "Gold 1", image: "Gold 1.png", color: "#e39925" },
+      10: { name: "Gold 2", image: "Gold 2.png", color: "#e39925" },
+      11: { name: "Gold 3", image: "Gold 3.png", color: "#e39925" },
+      12: { name: "Gold 4", image: "Gold 4.png", color: "#e39925" },
+      13: { name: "Platinum 1", image: "Platinum 1.png", color: "#8ec1e5" },
+      14: { name: "Platinum 2", image: "Platinum 2.png", color: "#8ec1e5" },
+      15: { name: "Platinum 3", image: "Platinum 3.png", color: "#8ec1e5" },
+      16: { name: "Platinum 4", image: "Platinum 4.png", color: "#8ec1e5" },
+      17: { name: "Emerald 1", image: "Emerald 1.png", color: "#0e9776" },
+      18: { name: "Emerald 2", image: "Emerald 2.png", color: "#0e9776" },
+      19: { name: "Emerald 3", image: "Emerald 3.png", color: "#0e9776" },
+      20: { name: "Emerald 4", image: "Emerald 4.png", color: "#0e9776" },
+      21: { name: "Ruby 1", image: "Ruby 1.png", color: "#e0113a" },
+      22: { name: "Ruby 2", image: "Ruby 2.png", color: "#e0113a" },
+      23: { name: "Ruby 3", image: "Ruby 3.png", color: "#e0113a" },
+      24: { name: "Ruby 4", image: "Ruby 4.png", color: "#e0113a" },
+      25: { name: "Diamond 1", image: "Diamond 1.png", color: "#8531eb" },
+      26: { name: "Diamond 2", image: "Diamond 2.png", color: "#8531eb" },
+      27: { name: "Diamond 3", image: "Diamond 3.png", color: "#8531eb" },
+      28: { name: "Diamond 4", image: "Diamond_4.png", color: "#8531eb" },
+      29: { name: "Champion", image: "Champion.png", color: "#FFEE58" },
+    };
+  
+    const rankColors = {
+      Bronze_1: "#8d4f29",
+      Bronze_2: "#8d4f29",
+      Bronze_3: "#8d4f29",
+      Bronze_4: "#8d4f29",
+      Silver_1: "#bebebe",
+      Silver_2: "#bebebe",
+      Silver_3: "#bebebe",
+      Silver_4: "#bebebe",
+      Gold_1: "#e39925",
+      Gold_2: "#e39925",
+      Gold_3: "#e39925",
+      Gold_4: "#e39925",
+      Platinum_1: "#8ec1e5",
+      Platinum_2: "#8ec1e5",
+      Platinum_3: "#8ec1e5",
+      Platinum_4: "#8ec1e5",
+      Emerald_1: "#0e9776",
+      Emerald_2: "#0e9776",
+      Emerald_3: "#0e9776",
+      Emerald_4: "#0e9776",
+      Ruby_1: "#e0113a",
+      Ruby_2: "#e0113a",
+      Ruby_3: "#e0113a",
+      Ruby_4: "#e0113a",
+      Diamond_1: "#8531eb",
+      Diamond_2: "#8531eb",
+      Diamond_3: "#8531eb",
+      Diamond_4: "#8531eb",
+      Champion: "#FFEE58",
+    };
+  
+    async function fetchData() {
+      const playerId = "92494c5b-585a-465c-8f3b-b561442b2ad5"; // Replace with your Player ID
+      const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`; // API URL
+      
+      try {
+        const response = await fetch(url);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+  
+        const data = await response.json();
+        console.log("API Response:", data); // Log the response for debugging
+  
+        // Solo Rank Data
+        const soloRankPoints = data.stats?.solo_rank_points || 0;
+        const soloRankId = data.stats?.current_solo_rank || 0;
+        const soloRankInfo = soloRankMapping[soloRankId] || {
+          name: "Unknown",
+          image: "Unknown.png",
+        };
+  
+        // Update rank icon and text
+        document.getElementById("rankIcon").src = `./assets/${soloRankInfo.image}`;
+        document.getElementById("soloRankLabel").textContent = "Solo Rank: ";
+        document.getElementById("soloRank").textContent = soloRankInfo.name;
+  
+        // Rank Color
+        const rankColor = rankColors[soloRankInfo.name.replace(/\s+/g, "_")] || "#ffffff";
+        document.getElementById("soloRank").style.color = rankColor;
+  
+        // Update Match Result
+        const latestMatch = data.matches?.[0];
+        if (latestMatch) {
+          const playerMatchStats = latestMatch.player_team.players.find(
+            (player) => player.id === playerId
+          );
+          if (playerMatchStats) {
+            const rankDelta = playerMatchStats.ranked_rating_delta;
+            const matchResultText =
+              rankDelta > 0
+              ? `Last Match: <span style="color: #81FF5A;">+${rankDelta} <img class="arrow" src="./assets/up_plusplus.webp" alt="Win Arrow"></span>`
+              : `Last Match: <span style="color: red;">${rankDelta} <img class="arrow" src="./assets/down_plusplus.webp" alt="Loss Arrow"></span>`;
+            document.getElementById("matchResult").innerHTML = matchResultText;
+          }
         }
+        // Update Progress Bar (assuming soloRankPoints is available from the fetched data)
+        const rankThresholds = [
+        { name: "Champion", points: 4700 },
+        { name: "Diamond_4", points: 4500 },
+        { name: "Diamond_3", points: 4300 },
+        { name: "Diamond_2", points: 4100 },
+        { name: "Diamond_1", points: 3900 },
+        { name: "Ruby_4", points: 3700 },
+        { name: "Ruby_3", points: 3500 },
+        { name: "Ruby_2", points: 3300 },
+        { name: "Ruby_1", points: 3100 },
+        { name: "Emerald_4", points: 2900 },
+        { name: "Emerald_3", points: 2700 },
+        { name: "Emerald_2", points: 2500 },
+        { name: "Emerald_1", points: 2300 },
+        { name: "Platinum_4", points: 2100 },
+        { name: "Platinum_3", points: 1900 },
+        { name: "Platinum_2", points: 1700 },
+        { name: "Platinum_1", points: 1500 },
+        { name: "Gold_4", points: 1300 },
+        { name: "Gold_3", points: 1100 },
+        { name: "Gold_2", points: 900 },
+        { name: "Gold_1", points: 700 },
+        { name: "Silver_4", points: 500 },
+        { name: "Silver_3", points: 300 },
+        { name: "Silver_2", points: 200 },
+        { name: "Silver_1", points: 0 },
+        { name: "Bronze_4", points: -1 },
+        { name: "Bronze_3", points: -1 },
+        { name: "Bronze_2", points: -1 },
+        { name: "Bronze_1", points: -1 },
+        ];
+  
+        const currentRankIndex = rankThresholds.findIndex(
+          (rank) => rank.name === soloRankInfo.name
+        );
+  
+        // Ensure currentRankIndex is valid
+        if (currentRankIndex === -1) {
+          throw new Error("Rank not found in the thresholds");
+        }
+  
+        const currentRank = rankThresholds[currentRankIndex];
+        const nextRank = rankThresholds[currentRankIndex + 1] || { points: 6000 };
+  
+        updateProgressBar(soloRankPoints, currentRank, nextRank);
+  
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("soloRank").textContent = "Solo Rank: Error - " + error.message;
+        document.getElementById("matchResult").textContent = "Last Match: Error - " + error.message;
       }
-
-      // Update Progress Bar (assuming soloRankPoints is available from the fetched data)
-      const soloRankPoints = data.stats?.solo_rank_points || 0;
-      const currentRank = { points: 1000 }; // Example data, should be dynamic
-      const nextRank = { points: 1200 }; // Example data, should be dynamic
-      const rankIconName = soloRankInfo.name.replace(/\s+/g, "_");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      document.getElementById("soloRank").textContent =
-        "Solo Rank: Error - " + error.message;
-      document.getElementById("matchResult").textContent =
-        "Last Match: Error - " + error.message;
     }
-  }
-
-  function triggerRankUpOverlay() {
-    const rankUpOverlay = document.getElementById("rankUpOverlay");
-    rankUpOverlay.classList.add("active");
-    setTimeout(() => {
-      rankUpOverlay.classList.remove("active");
-    }, 2000);
-  }
-
-  // Example call to the function
-
-  function updateRankGradient(rankName) {
-    const rankElement = document.querySelector(".solo-rank span");
-    const rankColor = rankColors[rankName];
-    const lightRankColor = "#ffffff"; // Secondary color for gradient
-
-    if (rankElement) {
-      rankElement.style.background = `linear-gradient(
-        to right,
-        ${lightRankColor} 0%,
-        ${rankColor} 50%,
-        ${lightRankColor} 100%
-    )`;
-      rankElement.style.backgroundSize = "1100% 100%";
-      rankElement.style.backgroundClip = "text";
-      rankElement.style.webkitBackgroundClip = "text"; // For WebKit browsers
-      rankElement.style.webkitTextFillColor = "transparent"; // Ensures text remains transparent
-
-      // Apply an animation that makes the gradient move smoothly
-      rankElement.style.animation = "moveGradient 3s linear infinite"; // Duration extended for smoother effect
-      rankElement.style.backgroundPosition = "0% 0%"; // Start position of animation
+  
+    function triggerRankUpOverlay() {
+      const rankUpOverlay = document.getElementById("rankUpOverlay");
+      rankUpOverlay.classList.add("active");
+      setTimeout(() => {
+        rankUpOverlay.classList.remove("active");
+      }, 2000);
     }
-  }
+  
+    function updateProgressBar(soloRankPoints, currentRank, nextRank) {
+  if (!currentRank || !nextRank) return; // Safety check
+  
+  // Calculate progress percentage
+  let progressPercentage = ((soloRankPoints - currentRank.points) / (nextRank.points - currentRank.points)) * 100;
+  
+  // Cap progress at 100% to avoid overflow
+  progressPercentage = Math.min(progressPercentage, 100);
 
-  fetchData();
-
-  setInterval(fetchData, 60000); // Refresh data every 60 seconds
-</script>
+  const progressBarElement = document.getElementById("rankProgress");
+  progressBarElement.style.width = `${progressPercentage}%`;
+  progressBarElement.style.backgroundColor = rankColors[currentRank.name] || "#8531eb";
+}
+  
+    fetchData();
+    setInterval(fetchData, 60000); // Refresh data every 60 seconds
+  </script>
+  
 </body>
 </html>
