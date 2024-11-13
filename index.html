@@ -273,6 +273,10 @@
   </div>
 
   <script>
+    function getPlayerIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('playerId'); // Get the 'playerId' parameter from the URL
+  }
     const soloRankMapping = {
       0: { name: "Unranked", image: "Unranked.png", color: "#ffffff" },
       1: { name: "Bronze 1", image: "Bronze 1.png", color: "#8d4f29" },
@@ -295,56 +299,62 @@
     ];
 
     async function fetchData() {
-      const playerId = "92494c5b-585a-465c-8f3b-b561442b2ad5";
-      const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`;
+    const playerId = getPlayerIdFromUrl(); // Dynamically get playerId from URL
 
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
+    if (!playerId) {
+      console.error("Player ID not found in URL.");
+      return;
+    }
 
-        const soloRankPoints = data.stats?.solo_rank_points || 0;
-        const soloRankId = data.stats?.current_solo_rank || 0;
-        const soloRankInfo = soloRankMapping[soloRankId] || { name: "Unknown", image: "Unknown.png", color: "#ffffff" };
+    const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`;
 
-        document.getElementById("rankIcon").src = `./assets/${soloRankInfo.image}`;
-        document.getElementById("soloRankLabel").textContent = "Solo Rank: ";
-        document.getElementById("soloRank").textContent = soloRankInfo.name;
-        document.getElementById("soloRank").style.color = soloRankInfo.color;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
 
-        const latestMatch = data.matches?.[0];
-        if (latestMatch) {
-          const playerMatchStats = latestMatch.player_team.players.find((player) => player.id === playerId);
-          const rankDelta = playerMatchStats?.ranked_rating_delta ?? 0;
-          const matchResultText = rankDelta > 0
-            ? `Last Match: <span style="color: #81FF5A;">+${rankDelta} <img class="arrow" src="./assets/up_plusplus.webp" alt="Win Arrow"></span>`
-            : `Last Match: <span style="color: red;">${rankDelta} <img class="arrow" src="./assets/down_plusplus.webp" alt="Loss Arrow"></span>`;
-          document.getElementById("matchResult").innerHTML = matchResultText;
-        }
+      const soloRankPoints = data.stats?.solo_rank_points || 0;
+      const soloRankId = data.stats?.current_solo_rank || 0;
+      const soloRankInfo = soloRankMapping[soloRankId] || { name: "Unknown", image: "Unknown.png", color: "#ffffff" };
 
-        updateProgressBar(soloRankPoints, soloRankInfo.name);
+      document.getElementById("rankIcon").src = `./assets/${soloRankInfo.image}`;
+      document.getElementById("soloRankLabel").textContent = "Solo Rank: ";
+      document.getElementById("soloRank").textContent = soloRankInfo.name;
+      document.getElementById("soloRank").style.color = soloRankInfo.color;
 
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("soloRank").textContent = "Solo Rank: Error - " + error.message;
-        document.getElementById("matchResult").textContent = "Last Match: Error - " + error.message;
+      const latestMatch = data.matches?.[0];
+      if (latestMatch) {
+        const playerMatchStats = latestMatch.player_team.players.find((player) => player.id === playerId);
+        const rankDelta = playerMatchStats?.ranked_rating_delta ?? 0;
+        const matchResultText = rankDelta > 0
+          ? `Last Match: <span style="color: #81FF5A;">+${rankDelta} <img class="arrow" src="./assets/up_plusplus.webp" alt="Win Arrow"></span>`
+          : `Last Match: <span style="color: red;">${rankDelta} <img class="arrow" src="./assets/down_plusplus.webp" alt="Loss Arrow"></span>`;
+        document.getElementById("matchResult").innerHTML = matchResultText;
       }
+
+      updateProgressBar(soloRankPoints, soloRankInfo.name);
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      document.getElementById("soloRank").textContent = "Solo Rank: Error - " + error.message;
+      document.getElementById("matchResult").textContent = "Last Match: Error - " + error.message;
     }
+  }
 
-    function updateProgressBar(soloRankPoints, currentRankName) {
-      const currentRankIndex = rankThresholds.findIndex((rank) => rank.name === currentRankName);
-      if (currentRankIndex === -1) return;
+  function updateProgressBar(soloRankPoints, currentRankName) {
+    const currentRankIndex = rankThresholds.findIndex((rank) => rank.name === currentRankName);
+    if (currentRankIndex === -1) return;
 
-      const currentRank = rankThresholds[currentRankIndex];
-      const nextRank = rankThresholds[currentRankIndex + 1] || { points: 6000 };
+    const currentRank = rankThresholds[currentRankIndex];
+    const nextRank = rankThresholds[currentRankIndex + 1] || { points: 6000 };
 
-      let progressPercentage = ((soloRankPoints - currentRank.points) / (nextRank.points - currentRank.points)) * 100;
-      progressPercentage = Math.min(progressPercentage, 100);
+    let progressPercentage = ((soloRankPoints - currentRank.points) / (nextRank.points - currentRank.points)) * 100;
+    progressPercentage = Math.min(progressPercentage, 100);
 
-      const progressBarElement = document.getElementById("rankProgress");
-      progressBarElement.style.width = `${progressPercentage}%`;
-      progressBarElement.style.backgroundColor = soloRankMapping[currentRankIndex]?.color || "#8531eb";
-    }
+    const progressBarElement = document.getElementById("rankProgress");
+    progressBarElement.style.width = `${progressPercentage}%`;
+    progressBarElement.style.backgroundColor = soloRankMapping[currentRankIndex]?.color || "#8531eb";
+  }
 
     fetchData();
     setInterval(fetchData, 60000); // Refresh data every 60 seconds
