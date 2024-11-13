@@ -26,7 +26,7 @@
     function generateLink() {
       const playerId = document.getElementById('playerId').value.trim();
       if (playerId) {
-        const baseURL = 'https://antiparty.github.io/Spectre-Stream-Overlay/overlay.html';
+        const baseURL = 'https://antiparty.github.io/Spectre-Stream-Overlay/index.html';
         const fullURL = `${baseURL}?playerId=${encodeURIComponent(playerId)}`;
         document.getElementById('link-url').textContent = fullURL;
         document.getElementById('generated-link').style.display = 'block';
