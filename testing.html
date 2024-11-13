@@ -1,16 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overlay URL Generator</title>
+  <title>Spectre Stream Overlay URL Generator</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
-    .container { text-align: center; }
-    .input-field { margin: 1em; }
-    #generated-link { display: none; margin-top: 1em; color: blue; cursor: pointer; text-decoration: underline; }
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #2C2F38;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background: #3A3F48;
+      border-radius: 8px;
+      padding: 30px;
+      width: 350px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #FFEE58;
+      margin-bottom: 20px;
+    }
+
+    .input-field {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: #BBBBBB;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #1E2228;
+      color: #FFF;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #FFEE58;
+    }
+
+    button {
+      background-color: #FFEE58;
+      color: #2C2F38;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #FFD700;
+    }
+
+    #generated-link {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #8AC7FF;
+      cursor: pointer;
+      text-decoration: underline;
+      display: none;
+      transition: opacity 0.3s;
+    }
+
+    #generated-link:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Spectre Stream Overlay URL Generator</h1>
@@ -41,4 +127,5 @@
     }
   </script>
 </body>
+
 </html>
