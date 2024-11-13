@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlay URL Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
+    .container { text-align: center; }
+    .input-field { margin: 1em; }
+    #generated-link { display: none; margin-top: 1em; color: blue; cursor: pointer; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Spectre Stream Overlay URL Generator</h1>
+    <div class="input-field">
+      <label for="playerId">Enter Player ID:</label>
+      <input type="text" id="playerId" placeholder="Player ID">
+    </div>
+    <button onclick="generateLink()">Generate Overlay Link</button>
+    <p id="generated-link" onclick="openLink()">Generated Link: <span id="link-url"></span></p>
+  </div>
+
+  <script>
+    function generateLink() {
+      const playerId = document.getElementById('playerId').value.trim();
+      if (playerId) {
+        const baseURL = 'https://antiparty.github.io/Spectre-Stream-Overlay/overlay.html';
+        const fullURL = `${baseURL}?playerId=${encodeURIComponent(playerId)}`;
+        document.getElementById('link-url').textContent = fullURL;
+        document.getElementById('generated-link').style.display = 'block';
+      } else {
+        alert("Please enter a Player ID.");
+      }
+    }
+
+    function openLink() {
+      const linkUrl = document.getElementById('link-url').textContent;
+      window.open(linkUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
