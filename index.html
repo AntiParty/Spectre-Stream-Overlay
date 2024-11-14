@@ -14,116 +14,220 @@
     }
 
     body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #2C2F38;
-      color: #FFFFFF;
+      font-family: 'Arial', sans-serif;
+      color: #333;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      margin: 0;
+      padding: 30px;
+      font-size: 16px;
+      overflow: hidden;
+      position: relative;
+      background: #f9f9f9;
     }
 
-    .container {
+    /* Content Style */
+    .content {
+      position: relative;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
       text-align: center;
-      background: #3A3F48;
-      border-radius: 8px;
-      padding: 30px;
-      width: 350px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.8);
     }
 
     h1 {
-      font-size: 24px;
-      color: #FFEE58;
+      color: #333;
+      font-size: 30px;
+      font-weight: bold;
       margin-bottom: 20px;
     }
 
-    .input-field {
-      margin-bottom: 15px;
-    }
-
     label {
-      display: block;
+      font-size: 14px;
+      color: #333;
       margin-bottom: 8px;
-      font-size: 16px;
-      color: #BBBBBB;
+      display: block;
     }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #555;
+    input,
+    select,
+    button {
+      width: 250px;
+      padding: 10px 15px;
+      margin: 10px 0;
+      background: #fff;
+      color: #333;
+      border: 1px solid #ddd;
       border-radius: 4px;
-      background: #1E2228;
-      color: #FFF;
-      outline: none;
-      transition: border-color 0.3s;
+      font-size: 14px;
+      transition: all 0.3s ease;
     }
 
-    input[type="text"]:focus {
-      border-color: #FFEE58;
+    input:focus,
+    select:focus {
+      border-color: #ff6f61;
+      outline: none;
     }
 
     button {
-      background-color: #FFEE58;
-      color: #2C2F38;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 4px;
+      background: #ff6f61;
+      color: #fff;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background 0.3s ease, transform 0.2s;
     }
 
     button:hover {
-      background-color: #FFD700;
+      background: #ff4a39;
+      transform: scale(1.05);
     }
 
+    /* Output link field */
     #generated-link {
       margin-top: 20px;
-      font-size: 14px;
-      color: #8AC7FF;
-      cursor: pointer;
-      text-decoration: underline;
       display: none;
-      transition: opacity 0.3s;
+      transition: opacity 0.3s ease;
     }
 
-    #generated-link:hover {
+    .link-field {
+      width: 100%;
+      max-width: 450px;
+      padding: 10px;
+      font-size: 14px;
+      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+
+    #generated-link.fade-in {
+      opacity: 1;
+    }
+
+    .preview-container {
+      width: 600px;
+      height: 400px;
+      background-color: #f1f1f1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 6px;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      color: #333;
+      font-size: 14px;
+      text-align: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    footer a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    footer a:hover {
       opacity: 0.8;
     }
+
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Spectre Stream Overlay URL Generator</h1>
-    <div class="input-field">
-      <label for="playerId">Enter Player ID:</label>
-      <input type="text" id="playerId" placeholder="Player ID">
+  <div class="content">
+    <h1>Spectre Stream Overlay</h1>
+
+    <label for="playerId">Enter Player ID:</label>
+    <input type="text" id="playerId" placeholder="Player ID" oninput="updatePreview()">
+
+    <label for="designSelector">Overlay Design:</label>
+    <select id="designSelector" onchange="updatePreview()">
+      <option value="overlay.html">Design 1</option>
+      <option value="overlay-v2.html">Design 2</option>
+    </select>
+
+    <button id="generateButton" onclick="generateLink()">Generate Link</button>
+
+    <div id="generated-link">
+      <input type="text" class="link-field" id="link-url" readonly onclick="copyLink()">
     </div>
-    <button onclick="generateLink()">Generate Overlay Link</button>
-    <p id="generated-link" onclick="openLink()">Generated Link: <span id="link-url"></span></p>
+
+    <div class="preview-container">
+      <iframe id="previewFrame" src="" title="Overlay Preview"></iframe>
+    </div>
   </div>
+
+  <footer>
+    Made with ❤️ by <a href="https://github.com/antiparty" target="_blank">antiparty</a>
+  </footer>
 
   <script>
     function generateLink() {
       const playerId = document.getElementById('playerId').value.trim();
+      const selectedDesign = document.getElementById('designSelector').value;
+      const generateButton = document.getElementById('generateButton');
+
+      
+      generateButton.textContent = "Generating...";
+
+      
+      setTimeout(() => {
+        if (playerId) {
+          const baseURL = `https://antiparty.github.io/Spectre-Stream-Overlay/${selectedDesign}`;
+          const fullURL = `${baseURL}?playerId=${encodeURIComponent(playerId)}`;
+          document.getElementById('link-url').value = fullURL;
+
+          
+          const generatedLink = document.getElementById('generated-link');
+          generatedLink.classList.add('fade-in');
+          generatedLink.style.display = 'block';
+        } else {
+          alert("Please enter a Player ID.");
+        }
+
+        
+        generateButton.textContent = "Generate Link";
+      }, 1000); 
+    }
+
+    function updatePreview() {
+      const playerId = document.getElementById('playerId').value.trim();
+      const selectedDesign = document.getElementById('designSelector').value;
+      const previewFrame = document.getElementById('previewFrame');
+
       if (playerId) {
-        const baseURL = 'https://antiparty.github.io/Spectre-Stream-Overlay/overlay.html';
+        const baseURL = `https://antiparty.github.io/Spectre-Stream-Overlay/${selectedDesign}`;
         const fullURL = `${baseURL}?playerId=${encodeURIComponent(playerId)}`;
-        document.getElementById('link-url').textContent = fullURL;
-        document.getElementById('generated-link').style.display = 'block';
-      } else {
-        alert("Please enter a Player ID.");
+        previewFrame.src = fullURL;
       }
     }
 
-    function openLink() {
-      const linkUrl = document.getElementById('link-url').textContent;
-      window.open(linkUrl, '_blank');
+    function copyLink() {
+      const linkInput = document.getElementById('link-url');
+      linkInput.select();
+      document.execCommand('copy');
+      alert('Link copied to clipboard!');
     }
   </script>
 </body>
