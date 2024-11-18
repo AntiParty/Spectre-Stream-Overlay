@@ -1,0 +1,19 @@
+/* Styles for resizing images */
+img[data-v-d7659df6] {
+  max-width: 50px; /* Adjust size as needed */
+  max-height: 50px; /* Keep proportions consistent */
+  border-radius: 4px; /* Optional for styling */
+  margin: 5px; /* Spacing between images */
+}
+
+/* Styling the timeline layout */
+.timeline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.timeline__match {
+  display: inline-block;
+  margin: 10px;
+}

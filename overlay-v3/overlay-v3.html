@@ -1,0 +1,288 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Container around SVG and overlay content */
+      .render-overlay {
+        position: relative;
+        display: inline-block;
+      }
+    
+      /* Image positioned on top of the SVG */
+      .overlay-content img {
+        position: absolute;
+        top: 24px;
+        left: 10%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: auto;
+      }
+    
+      /* Player stats container */
+      .player-stats {
+        font-family: Arial, sans-serif;
+        color: rgb(255, 255, 255);
+        position: absolute;
+        top: 24px;
+        left: 80px;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+    
+      /* Rank name styling */
+      .rank-name {
+        font-size: 14px;
+        font-weight: bold;
+        color: #FFFFFF;
+        top: 15px;
+      }
+    
+      /* Average win percentage styling */
+      .avg-win {
+        font-size: 14px;
+        font-weight: bold;
+        color: #FFFFFF;
+      }
+      .kd-ratio {
+        font-size: 14px;
+        font-weight: bold;
+        color: #FFFFFF;
+      }
+      .avg-win-text {
+        font-size: 18px;
+        font-weight: bold;
+        color: #FFFFFF;
+        margin-left: 35px;
+      }
+      .kd-ratio-text {
+        font-size: 18px;
+        font-weight: bold;
+        color: #FFFFFF;
+        margin-left: 10px;
+      }
+    
+      /* Rank points styling */
+      .rank-points {
+        font-size: 18px;
+        font-weight: bold;
+        color: #FFFFFF;
+      }
+    
+      /* Subtext for rank points (SR text) */
+      .sr-text {
+        font-size: 10px;
+        color: #FFFFFF;
+        margin-left: 5px;
+      }
+    
+      /* Win % value styling */
+      .win-perc {
+        font-size: 16px;
+        font-weight: bold;
+        color: #ff9900;
+      }
+    
+      /* Aligning rank name and win percentage side-by-side */
+      .rank-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 5px 0;
+      }
+    
+      /* General container for rank details */
+      .rank-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    
+      /* Ensures rect stays behind the rank icon */
+      svg rect {
+        z-index: 0;
+      }
+    </style>    
+  </head>
+  <body>
+    <div id="app-container">
+      <div id="app" class="plain">
+        <div class="render-overlay">
+          <div>
+            <div
+              data-v-d7659df6=""
+              class="overlay"
+              preview="false"
+              titleslug="valorant"
+            >
+              <div
+                data-v-d7659df6=""
+                class="timeline"
+                style="border-color: rgb(255, 255, 255)"
+              >
+                <div
+                  data-v-d7659df6=""
+                  class="timeline__border"
+                  style="background-color: rgba(0, 241, 178, 0.5)"
+                ></div>
+                <div
+                  data-v-d7659df6=""
+                  class="timeline__direction"
+                  style="background-color: rgba(0, 241, 178, 0.5)"
+                >
+                  ›
+                </div>
+              </div>
+              <!-- SVG remains untouched -->
+              <svg
+                data-v-d7659df6=""
+                width="302.579"
+                height="86"
+                viewBox="0 0 302.579 86"
+              >
+                <defs data-v-d7659df6=""/>
+                  <linearGradient
+                    data-v-d7659df6=""
+                    id="linear-gradient"
+                    x1="0.5"
+                    y1="0.178"
+                    x2="0.5"
+                    y2="1"
+                    gradientUnits="objectBoundingBox"
+                  >
+                    <stop data-v-d7659df6="" offset="0" stop-opacity="0"></stop>
+                    <stop
+                      data-v-d7659df6=""
+                      offset="1"
+                      stop-opacity="0.749"
+                    ></stop>
+                  </linearGradient>
+                </defs>
+                <g data-v-d7659df6="" transform="translate(0 -751)">
+                  <line data-v-d7659df6="" x1="2" y2="4" transform="matrix(0.996, 0.087, -0.087, 0.996, 299.657, 760.42)" fill="none" stroke="#ffffff" stroke-width="2"></line>
+                  <line data-v-d7659df6="" x2="32" transform="translate(12 812.5)" fill="none" stroke="#FFFFFF" stroke-width="2"></line>
+                  <rect data-v-d7659df6="" width="56" height="56" transform="translate(0 754)" fill="#00F1B280" opacity="0.25"></rect>
+                  <rect data-v-d7659df6="" width="281" height="1" transform="translate(0 751)" fill="#FFFFFF" opacity="0.5"></rect>
+                  <path
+                    data-v-d7659df6=""
+                    d="M56.982,405.722l-.285,56H314.156a20,20,0,0,0,17.1-9.62l27.095-46.361Z"
+                    transform="translate(-56.697 348.278)"
+                    fill="url(#linear-gradient)"
+                  ></path>
+                  <path data-v-d7659df6="" d="M320.4,451.583a19.106,19.106,0,0,1-16.24,9.14H44.7v1H304.156a20,20,0,0,0,17.1-9.62l23.436-39.3h-1.024Z" transform="translate(-44.697 351.278)" fill="#ffffff" opacity="0.867"></path>
+                </g>
+              </svg>
+              <!-- Image placed on top of the SVG path -->
+              <div class="overlay-content">
+                <img src="" alt="Overlay Image" id="rankIcon" />
+              </div>
+              <div class="overlay-text" id="playerStats"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Moved soloRankMapping here to avoid the reference error
+      function getPlayerIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("playerId"); // Get the 'playerId' parameter from the URL
+      }
+      const soloRankMapping = {
+        0: { name: "Unranked", image: "Unranked.png", color: "#ffffff" },
+        1: { name: "Bronze 1", image: "Bronze_1.png", color: "#8d4f29" },
+        2: { name: "Bronze 2", image: "Bronze_2.png", color: "#8d4f29" },
+        3: { name: "Bronze 3", image: "Bronze_3.png", color: "#8d4f29" },
+        4: { name: "Bronze 4", image: "Bronze_4.png", color: "#8d4f29" },
+        5: { name: "Silver 1", image: "Silver_1.png", color: "#bebebe" },
+        6: { name: "Silver 2", image: "Silver_2.png", color: "#bebebe" },
+        7: { name: "Silver 3", image: "Silver_3.png", color: "#bebebe" },
+        8: { name: "Silver 4", image: "Silver_4.png", color: "#bebebe" },
+        9: { name: "Gold 1", image: "Gold_1.png", color: "#e39925" },
+        10: { name: "Gold 2", image: "Gold_2.png", color: "#e39925" },
+        11: { name: "Gold 3", image: "Gold_3.png", color: "#e39925" },
+        12: { name: "Gold 4", image: "Gold_4.png", color: "#e39925" },
+        13: {name: "Platinum 1",image: "Platinum_1.png",color: "#8ec1e5",},
+        14: {name: "Platinum 2",image: "Platinum_2.png",color: "#8ec1e5",},
+        15: {name: "Platinum 3",image: "Platinum_3.png",color: "#8ec1e5",},
+        16: {name: "Platinum 4",image: "Platinum_4.png",color: "#8ec1e5",},
+        17: { name: "Emerald 1", image: "Emerald_1.png", color: "#0e9776" },
+        18: { name: "Emerald 2", image: "Emerald_2.png", color: "#0e9776" },
+        19: { name: "Emerald 3", image: "Emerald_3.png", color: "#0e9776" },
+        20: { name: "Emerald 4", image: "Emerald_4.png", color: "#0e9776" },
+        21: { name: "Ruby 1", image: "Ruby_1.png", color: "#e0113a" },
+        22: { name: "Ruby 2", image: "Ruby_2.png", color: "#e0113a" },
+        23: { name: "Ruby 3", image: "Ruby_3.png", color: "#e0113a" },
+        24: { name: "Ruby 4", image: "Ruby_4.png", color: "#e0113a" },
+        25: { name: "Diamond 1", image: "Diamond_1.png", color: "#8531eb" },
+        26: { name: "Diamond 2", image: "Diamond_2.png", color: "#8531eb" },
+        27: { name: "Diamond 3", image: "Diamond_3.png", color: "#8531eb" },
+        28: { name: "Diamond 4", image: "Diamond_4.png", color: "#8531eb" },
+        29: { name: "Champion", image: "Champion.png", color: "#FFEE58" },
+      };
+      function calculateWinPercentage(wins, totalMatches) {
+        if (totalMatches === 0) return 0;
+        return ((wins / totalMatches) * 100).toFixed(2);
+      }
+      function calculateKD(kills, deaths) {
+        return deaths === 0 ? "N/A" : (kills / deaths).toFixed(2);
+      }
+
+      async function fetchData() {
+        const playerId = getPlayerIdFromUrl(); 
+
+        if (!playerId) {
+          console.error("Player ID not found in URL.");
+          return;
+        }
+        const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`;
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+
+          // Extract solo rank from the data
+          const soloRankId = data.stats?.current_solo_rank || 0;
+          const soloRankPoints = data.stats?.rank_rating || 0;
+          const rankData = soloRankMapping[soloRankId] || soloRankMapping[0];
+          const avgWinPercentage = data.extended_stats?.last_20_matches_avg_stats?.average_win_percentage || 0;
+          const totalKills = data.extended_stats?.last_20_matches_avg_stats?.total_kills || 0;
+          const totalDeaths = data.extended_stats?.last_20_matches_avg_stats?.total_deaths || 0;
+          const kdRatio = calculateKD(totalKills, totalDeaths);
+
+
+          // Get the image filename from the mapping
+          document.getElementById("rankIcon").src = `../assets/${rankData.image}`;  // Fix: Use rankData.image
+          document.getElementById("rankIcon").style.borderColor = rankData.color;
+
+          document.getElementById("playerStats").innerHTML = `
+          <div class="player-stats">
+            <div class="rank-info">
+            <span class="rank-name">${rankData.name}</span>
+            <span class="avg-win">Win %: </span>
+            <span class="kd-ratio">K/D</span>
+          </div>
+          <div>
+            <span class="rank-points">${soloRankPoints}</span><span class="sr-text"> SR</span>
+            <span class="avg-win-text">${avgWinPercentage}%</span>
+            <span class="kd-ratio-text">${kdRatio}</span>
+          </div>
+        </div>
+        `;
+
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+
+      // Fetch data when the page loads
+      fetchData();
+    </script>
+  </body>
+</html>

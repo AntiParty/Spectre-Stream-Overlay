@@ -121,16 +121,14 @@
         <img class="rank-icon" id="rankIcon" src="./assets/Unranked.png" />
         <div class="stat">
           <div class="solo-rank-wrapper">
-            <span class="rating-label">Loading...</span>
+            <span class="rating-label">SOLO RANK</span>
             <span class="solo-rank" id="soloRank">Loading...</span>
           </div>
 
-          <!-- Progress Bar -->
           <div class="progress-container">
             <div class="progress-bar" id="rankProgress" style="width: 0%"></div>
           </div>
 
-          <!-- Last Match Result -->
           <div class="last-match" id="matchResult">
             Loading... <span class="glow-win">⬆️</span>
           </div>
@@ -139,7 +137,6 @@
     </div>
 
     <script>
-      // Function to extract player ID from URL query parameters
       function getPlayerIdFromUrl() {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get("playerId"); // Get the 'playerId' parameter from the URL
@@ -191,7 +188,7 @@
 
       // Fetch player data from the API
       async function fetchData() {
-        const playerId = getPlayerIdFromUrl(); // Get player ID from URL
+        const playerId = getPlayerIdFromUrl(); 
 
         if (!playerId) {
           console.error("Player ID not found in URL.");
