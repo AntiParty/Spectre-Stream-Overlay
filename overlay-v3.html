@@ -115,7 +115,7 @@
               data-v-d7659df6=""
               class="overlay"
               preview="false"
-              titleslug="valorant"
+              titleslug=""
             >
               <div
                 data-v-d7659df6=""
@@ -191,6 +191,16 @@
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get("playerId"); // Get the 'playerId' parameter from the URL
       }
+      const sponsorMapping = {
+        0: { name: "Umbra", image: "Umbra.png" },
+        1: { name: "Ghostlink", image: "Ghostlink.png"},
+        2: { name: "Pinnacle", image: "Pinnacle.png"},
+        3: { name: "Vector", image: "Vector.png"},
+        4: { name: "Morrgen", image: "Morrgen.png" },
+        5: { name: "Muu", image: "Muu.png"},
+        6: { name: "Ryker", image: "Ryker.png"},
+        7: { name: "Bloom", image: "Bloom.png" }
+      }
       const soloRankMapping = {
         0: { name: "Unranked", image: "Unranked.png", color: "#ffffff" },
         1: { name: "Bronze 1", image: "Bronze_1.png", color: "#8d4f29" },
@@ -232,56 +242,71 @@
       }
 
       async function fetchData() {
-        const playerId = getPlayerIdFromUrl(); 
+  const playerId = getPlayerIdFromUrl();
 
-        if (!playerId) {
-          console.error("Player ID not found in URL.");
-          return;
-        }
-        const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`;
+  if (!playerId) {
+    console.error("Player ID not found in URL.");
+    return;
+  }
+  const url = `https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`;
 
-        try {
-          const response = await fetch(url);
-          if (!response.ok)
-            throw new Error(`HTTP error! status: ${response.status}`);
-          const data = await response.json();
+  try {
+    const response = await fetch(url);
+    if (!response.ok)
+      throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
 
-          // Extract solo rank from the data
-          const soloRankId = data.stats?.current_solo_rank || 0;
-          const soloRankPoints = data.stats?.rank_rating || 0;
-          const rankData = soloRankMapping[soloRankId] || soloRankMapping[0];
-          const avgWinPercentage = data.extended_stats?.last_20_matches_avg_stats?.average_win_percentage || 0;
-          const totalKills = data.extended_stats?.last_20_matches_avg_stats?.total_kills || 0;
-          const totalDeaths = data.extended_stats?.last_20_matches_avg_stats?.total_deaths || 0;
-          const kdRatio = calculateKD(totalKills, totalDeaths);
+    // Extract solo rank from the data
+    const soloRankId = data.stats?.current_solo_rank || 0;
+    const soloRankPoints = data.stats?.rank_rating || 0;
+    const rankData = soloRankMapping[soloRankId] || soloRankMapping[0];
+    const avgWinPercentage = data.extended_stats?.last_20_matches_avg_stats?.average_win_percentage || 0;
+    const totalKills = data.extended_stats?.last_20_matches_avg_stats?.total_kills || 0;
+    const totalDeaths = data.extended_stats?.last_20_matches_avg_stats?.total_deaths || 0;
+    const kdRatio = calculateKD(totalKills, totalDeaths);
 
-
-          // Get the image filename from the mapping
-          document.getElementById("rankIcon").src = `./assets/${rankData.image}`;  // Fix: Use rankData.image
-          document.getElementById("rankIcon").style.borderColor = rankData.color;
-
-          document.getElementById("playerStats").innerHTML = `
-          <div class="player-stats">
-            <div class="rank-info">
-            <span class="rank-name">${rankData.name}</span>
-            <span class="avg-win">Win % </span>
-            <span class="kd-ratio">K/D</span>
-          </div>
-          <div>
-            <span class="rank-points">${soloRankPoints}</span><span class="sr-text"> SR</span>
-            <span class="avg-win-text">${avgWinPercentage}%</span>
-            <span class="kd-ratio-text">${kdRatio}</span>
-          </div>
+    // Update player stats display
+    document.getElementById("rankIcon").src = `./assets/${rankData.image}`;
+    document.getElementById("rankIcon").style.borderColor = rankData.color;
+    document.getElementById("playerStats").innerHTML = `
+      <div class="player-stats">
+        <div class="rank-info">
+          <span class="rank-name">${rankData.name}</span>
+          <span class="avg-win">Win % </span>
+          <span class="kd-ratio">K/D</span>
         </div>
-        `;
+        <div>
+          <span class="rank-points">${soloRankPoints}</span><span class="sr-text"> SR</span>
+          <span class="avg-win-text">${avgWinPercentage}%</span>
+          <span class="kd-ratio-text">${kdRatio}</span>
+        </div>
+      </div>
+    `;
 
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
+    // Display last 5 games and their sponsor logos
+    const lastGames = data.last_matches || [];
+    const last5Games = lastGames.slice(0, 5); // Get the last 5 games
+    const sponsorIcons = last5Games.map(game => {
+      const sponsorId = game.sponsor_id || 0; // Assuming the API includes sponsor_id
+      const sponsorData = sponsorMapping[sponsorId] || sponsorMapping[0];
+      return `<img src="./assets/${sponsorData.image}" alt="${sponsorData.name}" class="sponsor-icon" />`;
+    }).join("");
 
+    const sponsorsContainer = document.createElement("div");
+    sponsorsContainer.innerHTML = `
+      <div class="sponsors-container">
+        ${sponsorIcons}
+      </div>
+    `;
+    document.getElementById("app-container").appendChild(sponsorsContainer);
+
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
       // Fetch data when the page loads
       fetchData();
+      setInterval(fetchData, 30000);
     </script>
   </body>
 </html>
