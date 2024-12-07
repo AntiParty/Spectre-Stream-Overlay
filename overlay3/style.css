@@ -1,0 +1,129 @@
+/* Container around SVG and overlay content */
+.render-overlay {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Image positioned on top of the SVG */
+  .overlay-content img {
+    position: absolute;
+    top: 24px;
+    left: 10%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: auto;
+  }
+
+  /* Player stats container */
+  .player-stats {
+    font-family: Arial, sans-serif;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 24px;
+    left: 80px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  /* Rank name styling */
+  .rank-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+    top: 15px;
+  }
+
+  /* Average win percentage styling */
+  .avg-win {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+  }
+  .kd-ratio {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+  }
+  .avg-win-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    margin-left: 20px;
+  }
+  .kd-ratio-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    margin-left: 10px;
+  }
+
+  /* Rank points styling */
+  .rank-points {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+  }
+
+  /* Subtext for rank points (SR text) */
+  .sr-text {
+    font-size: 10px;
+    color: #FFFFFF;
+    margin-left: 5px;
+  }
+
+  /* Win % value styling */
+  .win-perc {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff9900;
+  }
+
+  /* Aligning rank name and win percentage side-by-side */
+  .rank-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 5px 0;
+  }
+
+  /* General container for rank details */
+  .rank-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Ensures rect stays behind the rank icon */
+  svg rect {
+    z-index: 0;
+  }
+  .sponsors-container {
+  position: absolute;
+  top: -10;  /* Align the container to the top */
+  left: 51%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center; /* Align icons horizontally */
+  z-index: 10; /* Ensure it is above the timeline */
+  padding: 10px 0; /* Add some padding to give space for the images */
+  width: 18px;
+  height: 18px;
+}
+
+/* Style for each sponsor image */
+.sponsor-icon {
+  width: 50px;  /* Adjust size of the icons as necessary */
+  height: auto;
+  margin: 0 10px; /* Space between images */
+}
+
+/* Ensure the images resize smoothly on hover */
+.sponsor-icon:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out; /* Smooth scaling */
+}
+  

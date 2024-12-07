@@ -1,0 +1,37 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Player Stats</title>
+<link rel="stylesheet" href="style.css">
+<meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="stats">
+      <img class="rank-icon" id="rankIcon" src="../assets/Unranked.png" />
+      <div class="stat">
+        <div class="solo-rank-wrapper">
+          <span class="solo-rank" id="soloRankLabel">Solo Rank: </span>
+          <span id="soloRank" class="rank-text">Loading...</span>
+        </div>
+  
+        <!-- Add progress bar container here -->
+        <div class="progress-container">
+          <div class="progress-bar" id="rankProgress"></div>
+          <div class="strike" id="strike"></div>
+        </div>
+        
+  
+        <div class="last-match" id="matchResult">Last Match: Loading...</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="rank-up-overlay" id="rankUpOverlay">
+    <div class="rank-up-text">Rank Up!</div>
+  </div>
+
+  <div class="progress-bar" id="rankProgress" style="width: 0%; background-color: #ffffff;"></div> <!-- Initial progress bar -->
+  <script src="script.js"></script>
+</body>
+</html>

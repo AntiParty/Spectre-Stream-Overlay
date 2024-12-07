@@ -1,0 +1,109 @@
+@font-face {
+    font-family: "Product Sans";
+    src: url("./product-sans/Product Sans Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    background: transparent;
+    color: #ffffff;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .stats {
+    display: flex;
+    align-items: center;
+    background: rgba(10, 10, 10, 0.85); /* Dark translucent background */
+    border-radius: 20px;
+    padding: 20px 30px;
+    width: 450px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .rank-icon {
+    width: 70px;
+    height: 70px;
+    margin-right: 15px;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: left;
+    flex: 1;
+  }
+
+  .solo-rank-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+  }
+
+  .rating-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #999;
+    margin-bottom: 2px;
+  }
+
+  .solo-rank {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  .progress-container {
+    position: relative;
+    height: 10px;
+    width: 100%;
+    background: #444;
+    border-radius: 5px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background-color: #22c55e; /* Dynamic color based on rank */
+    transition: width 0.4s ease;
+  }
+
+  .last-match {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    margin-top: 8px;
+    color: #b3b3b3;
+  }
+
+  .last-match img {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+  }
+
+  .glow-win {
+    color: #22c55e;
+    text-shadow: 0 0 8px #22c55e;
+  }
+
+  .glow-loss {
+    color: red;
+    text-shadow: 0 0 8px red;
+  }
