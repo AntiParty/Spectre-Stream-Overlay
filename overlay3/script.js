@@ -139,13 +139,8 @@ async function fetchData() {
           Object.values(sponsorMapping).find(
             (s) => s.name.toLowerCase() === sponsorName.toLowerCase()
           ) || sponsorMapping.default;
-        
-        const imageSrc = 
-        sponsorName.toLowerCase() === "morrgen"
-        ? "https://raw.githubusercontent.com/AntiParty/Spectre-Stream-Overlay/refs/heads/main/assets/Morrgen.png"
-        : `../assets/${sponsorData.image}`;
 
-        return `<img src="${imageSrc}" alt="${sponsorData.name}" class="sponsor-icon" />`;
+        return `<img src="../assets/${sponsorData.image}" alt="${sponsorData.name}" class="sponsor-icon" />`;
       })
       .join("");
 
