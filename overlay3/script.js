@@ -118,7 +118,7 @@ async function fetchData() {
     }
 
     // Display last 5 games and their sponsor logos
-    const last5Games = (data.matches || []).slice(0, 6);
+    const last5Games = (data.matches || []).slice(0, 8);
     console.log("Last 5 games:", last5Games);
     const sponsorNames = last5Games.map((game, index) => {
         // Log the full game data to inspect its structure
