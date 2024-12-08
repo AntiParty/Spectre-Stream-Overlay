@@ -11,6 +11,7 @@ const sponsorMapping = {
   4: { name: "Ryker", image: "Ryker.png" },
   5: { name: "Muu", image: "Muu.png" },
   6: { name: "Ghostlink", image: "Ghostlink.png" },
+  7: { name: "Morrgen", image: "Morrgen.png"},
   default: { name: "Unknown Sponsor", image: "default.png" },
 };
 
@@ -120,18 +121,16 @@ async function fetchData() {
     const last5Games = (data.matches || []).slice(0, 6);
     console.log("Last 5 games:", last5Games);
     const sponsorNames = last5Games.map((game, index) => {
-      // Log the full game data to inspect its structure
-      console.log(`Game ${index + 1} data:`, game);
-
-      // Access the sponsor name from the match data
-      const sponsorName =
-        game.player_team?.players?.find((player) => player.id === playerId)
-          ?.sponsor_name || "Unknown Sponsor";
-      console.log(`Sponsor for game ${index + 1}:`, sponsorName);
-
-      return sponsorName;
-    });
-    const sponsorIcons = last5Games
+        // Log the full game data to inspect its structure
+        console.log(`Game ${index + 1} data:`, game);
+      
+        // Access the sponsor name from the match data
+        const sponsorName = game.player_team?.players?.find(player => player.id === playerId)?.sponsor_name || "Unknown Sponsor"; 
+        console.log(`Sponsor for game ${index + 1}:`, sponsorName);
+      
+        return sponsorName;
+      });
+      const sponsorIcons = last5Games
       .map((game, index) => {
         const sponsorName =
           game.player_team?.players?.find((player) => player.id === playerId)
@@ -142,12 +141,7 @@ async function fetchData() {
             (s) => s.name.toLowerCase() === sponsorName.toLowerCase()
           ) || sponsorMapping.default;
 
-        const imageSrc =
-          sponsorName.toLowerCase() === "morrgen"
-            ? "https://raw.githubusercontent.com/AntiParty/Spectre-Stream-Overlay/refs/heads/main/assets/Morrgen.png" // Replace with the actual link
-            : `../assets/${sponsorData.image}`;
-
-        return `<img src="${imageSrc}" alt="${sponsorData.name}" class="sponsor-icon" />`;
+        return `<img src="../assets/${sponsorData.image}" alt="${sponsorData.name}" class="sponsor-icon" />`;
       })
       .join("");
 
