@@ -195,7 +195,7 @@
       
       setTimeout(() => {
         if (playerId) {
-          const baseURL = `https://overlay.antiparty.dev/Spectre-Stream-Overlay/${selectedDesign}`;
+          const baseURL = `https://overlay.antiparty.dev/${selectedDesign}`;
           const fullURL = `${baseURL}?playerId=${encodeURIComponent(playerId)}`;
           document.getElementById('link-url').value = fullURL;
           const generatedLink = document.getElementById('generated-link');
@@ -216,7 +216,7 @@
       const previewFrame = document.getElementById('previewFrame');
 
       if (playerId) {
-        const baseURL = `https://antiparty.github.io/Spectre-Stream-Overlay/${selectedDesign}`;
+        const baseURL = `https://overlay.antiparty.dev/${selectedDesign}`;
         const fullURL = `${baseURL}?playerId=${encodeURIComponent(playerId)}`;
         previewFrame.src = fullURL;
       }
